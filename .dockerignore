@@ -1,0 +1,71 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+
+# C extensions
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+*.env
+
+# Testing
+*.coverage
+coverage.xml
+*.log
+*.test
+.tox/
+.nox/
+coverage/
+test-results/
+
+# Static files or assets (if generated externally)
+staticfiles/
+media/
+
+# Local configuration files
+.env.local
+.env.*.local
+*.yaml
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Git
+.git/
+.gitignore
+
+# Docker-specific files
+Dockerfile
+docker-compose.yml
+
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Build directories
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+eggs/
+parts/
+sdist/
+wheels/
+node_modules/
+
+# Other directories
+*.DS_Store
+Thumbs.db

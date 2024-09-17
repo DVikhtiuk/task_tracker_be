@@ -8,7 +8,8 @@ app = FastAPI(
     title="Task Tracker Back-End",
     description="""
     Task Tracker Back-End - Test task
-    """,)
+    """,
+)
 
 app.add_middleware(
     CORSMiddleware,
