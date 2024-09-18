@@ -1,0 +1,2 @@
+HEALTHY_HEALTHCHECK_RESPONSE = {"status": "healthy"}
+SELECT_1_Q = "SELECT 1"

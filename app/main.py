@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.settings import settings
+from app.routers.healthcheck_routers import router as healthcheck_router
 
 app = FastAPI(
     title="Task Tracker Back-End",
@@ -18,12 +19,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/", tags=["healthcheck"])
-async def health_check():
-    return {"status": "healthy"}
-
+app.include_router(healthcheck_router)
 
 if __name__ == "__main__":
     uvicorn.run(
