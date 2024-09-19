@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.exc.tasks import InvalidTaskPriorityException
+from app.exc.tasks import InvalidResponsiblePersonDataException, InvalidTaskPriorityException
 from app.exc.users import UserNotFoundException
 from app.models import User
 from app.schemas.tasks import TaskFilters
@@ -19,6 +19,21 @@ def check_task_priority(priority: int) -> None:
     """
     if not (0 <= priority <= 3):
         raise InvalidTaskPriorityException(priority=priority)
+
+
+def check_responsible_person_id(person_id: int) -> None:
+    """
+    Validates the responsible person's ID.
+
+    Args:
+        person_id (int): The ID of the responsible person to be validated.
+
+    Raises:
+        InvalidTaskDataException: If the provided person_id is less than or equal to zero.
+
+    """
+    if not (0 < person_id):
+        raise InvalidResponsiblePersonDataException(person_id)
 
 
 async def get_user_by_id_or_404(session: AsyncSession, user_id: int) -> User:

@@ -1,23 +1,12 @@
 import asyncio
 
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.basic_jwt_user_auth import pwd_context
-from app.core.settings import settings
+from app.db.database import AsyncSessionLocal
 from app.enums.user_role import UserRole
 from app.models import User
-
-DATABASE_URL = (
-    f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASSWORD}@localhost:{settings.DB_PORT}/"
-    f"{settings.DB_NAME}"
-)
-
-
-engine = create_async_engine(DATABASE_URL, echo=True)
-
-async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
 async def create_initial_users(session: AsyncSession) -> None:
@@ -36,19 +25,19 @@ async def create_initial_users(session: AsyncSession) -> None:
         {
             "username": "admin",
             "email": "admin@example.com",
-            "password": "admin123",
+            "password": "admin1234",
             "role": UserRole.ADMIN,
         },
         {
             "username": "manager",
             "email": "manager@example.com",
-            "password": "manager123",
+            "password": "manager1234",
             "role": UserRole.MANAGER,
         },
         {
             "username": "user",
             "email": "user@example.com",
-            "password": "user123",
+            "password": "user1234",
             "role": UserRole.USER,
         },
     ]
@@ -77,7 +66,7 @@ async def main():
     Establishes a database session and calls the `create_initial_users` function
     to ensure predefined users exist in the system.
     """
-    async with async_session() as session:
+    async with AsyncSessionLocal() as session:
         await create_initial_users(session)
 
 

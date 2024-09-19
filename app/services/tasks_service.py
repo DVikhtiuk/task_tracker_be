@@ -8,7 +8,12 @@ from app.exc.tasks import TaskNotFoundException
 from app.models import Task, User
 from app.schemas.tasks import Pagination, TaskCreate, TaskFilters, TaskListResponse, TaskResponse, TaskUpdate
 from app.services.email_service import EmailService
-from app.utils.tasks_utils import check_filters_data, check_task_priority, get_user_by_id_or_404
+from app.utils.tasks_utils import (
+    check_filters_data,
+    check_responsible_person_id,
+    check_task_priority,
+    get_user_by_id_or_404,
+)
 from app.utils.user_permissions_check import (
     check_user_permissions_for_task_access,
     check_user_permissions_for_task_creation,
@@ -53,6 +58,7 @@ class TaskService:
             UserPermissionsDeniedException: If the user does not have permission to create the task.
         """
         check_task_priority(task_data.priority)
+        check_responsible_person_id(task_data.responsible_person_id)
         responsible_person = await get_user_by_id_or_404(user_id=task_data.responsible_person_id, session=self.session)
         new_task = Task(
             title=task_data.title,
@@ -297,14 +303,16 @@ class TaskService:
         Returns:
             tuple: The query object and total count of tasks.
         """
+        limit = pagination.page_size
+        offset = (pagination.page - 1) * pagination.page_size
         query = self.apply_user_access_filter(
             self.apply_filters(select(Task).options(selectinload(Task.executors)), filters),
             current_user,
         )
         total_query = select(func.count()).select_from(query.subquery())
         total = (await self.session.execute(total_query)).scalar()
+        query = query.limit(limit).offset(offset)
 
-        query = query.limit(pagination.limit).offset(pagination.offset)
         return query, total
 
     async def get_tasks(self, filters: TaskFilters, pagination: Pagination, current_user: User) -> TaskListResponse:
@@ -323,13 +331,15 @@ class TaskService:
             HTTPException: Errors related to user not found and server issues.
         """
         await check_filters_data(filters, self.session)
+
         query, total = await self.build_query(filters, pagination, current_user)
+
         result = await self.session.execute(query)
         tasks = result.scalars().all()
 
         return TaskListResponse(
             tasks=[TaskResponse.from_orm(task) for task in tasks],
             total=total,
-            limit=pagination.limit,
-            offset=pagination.offset,
+            page=pagination.page,
+            page_size=pagination.page_size,
         )

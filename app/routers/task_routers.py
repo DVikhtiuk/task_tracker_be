@@ -4,13 +4,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.basic_jwt_user_auth import get_current_user
 from app.core.settings import logger
 from app.db.database import get_db_session
-from app.exc.tasks import InvalidTaskPriorityException, TaskNotFoundException
+from app.exc.tasks import InvalidResponsiblePersonDataException, InvalidTaskPriorityException, TaskNotFoundException
 from app.exc.users import UserNotFoundException, UserPermissionsDeniedException
 from app.schemas import TaskCreate, TaskResponse, TaskUpdate
 from app.schemas.tasks import Pagination, TaskFilters, TaskListResponse
 from app.services.tasks_service import TaskService
 
-# Префикс и теги для всех маршрутов
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
@@ -40,7 +39,7 @@ async def create_task(
         result = await task_service.create_task(task_data, current_user)
         logger.info(f"Task created successfully: {result.id}")
         return result
-    except (InvalidTaskPriorityException, UserPermissionsDeniedException) as e:
+    except (InvalidTaskPriorityException, UserPermissionsDeniedException, InvalidResponsiblePersonDataException) as e:
         logger.warning(f"Error during task creation: {e.message}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.message)
     except UserNotFoundException as e:

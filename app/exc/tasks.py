@@ -43,3 +43,27 @@ class InvalidTaskPriorityException(Exception):
             message = f"Invalid priority {priority}. Priority must be between 0 and 3."
         self.message = message
         super().__init__(self.message)
+
+
+class InvalidResponsiblePersonDataException(Exception):
+    """
+    Exception raised when invalid data is assigned to a task.
+
+    Attributes:
+        user_id (int): The invalid user ID.
+        message (str): The error message to be displayed.
+    """
+
+    def __init__(self, user_id: int, message: str = None):
+        """
+        Initializes the exception with the given user ID and an optional message.
+
+        Args:
+            user_id (int): The invalid user ID value.
+            message (str, optional): Custom error message. Defaults to
+            "Invalid value for responsible person. {user_id}. user_id must be greater than 0.".
+        """
+        if message is None:
+            message = f"Invalid value for responsible person. {user_id}. user_id must be greater than 0."
+        self.message = message
+        super().__init__(self.message)
