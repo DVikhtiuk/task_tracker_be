@@ -1,0 +1,22 @@
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.venv
+  | \.env
+  | _build
+  | buck-out
+  | build
+  | dist
+  | app/migrations/*
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 120
+known_third_party = ["sqlalchemy", "pytest", "fastapi"]
+skip = [".git", "__pycache__", ".venv", ".env", "app/migrations/*"]

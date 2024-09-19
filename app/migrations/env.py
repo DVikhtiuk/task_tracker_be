@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.db.database import Base, build_async_db_url
-from app.models import *
+from app.models import Task, TaskExecutor, User  # noqa
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
